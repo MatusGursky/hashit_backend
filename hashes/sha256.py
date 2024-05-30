@@ -1,7 +1,7 @@
 # sha256.py
 
-# constants
-K = [
+# konštanty
+constants = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
     0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
@@ -14,8 +14,6 @@ K = [
 
 """Vráti SHA-256 hash z prenesenej správy.
    Argument by mal byť objekt typu reťazec."""
-
-
 def generate_hash(message: str) -> str:
     if isinstance(message, str):
         message = bytearray(message, 'ascii')
@@ -79,7 +77,7 @@ def generate_hash(message: str) -> str:
 
         # Iterácia pre t=0 až 63
         for t in range(64):
-            t1 = ((h + _capsigma1(e) + _ch(e, f, g) + K[t] +
+            t1 = ((h + _capsigma1(e) + _ch(e, f, g) + constants[t] +
                    int.from_bytes(message_schedule[t], 'big')) % 2 ** 32)
 
             t2 = (_capsigma0(a) + _maj(a, b, c)) % 2 ** 32
