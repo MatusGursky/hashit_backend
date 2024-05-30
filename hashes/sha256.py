@@ -14,6 +14,8 @@ constants = [
 
 """Vráti SHA-256 hash z prenesenej správy.
    Argument by mal byť objekt typu reťazec."""
+
+
 def generate_hash(message: str) -> str:
     if isinstance(message, str):
         message = bytearray(message, 'ascii')
