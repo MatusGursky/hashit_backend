@@ -1,5 +1,7 @@
 
-## Backend for HashIt App
+# Backend for HashIt App
+
+Backend aplikácie sa využíva pre zavolanie hashovacej funkcii SHA-256
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
