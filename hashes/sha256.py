@@ -1,6 +1,6 @@
 # sha256.py
 
-# konštanty
+# Constants
 constants = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -12,34 +12,31 @@ constants = [
     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 ]
 
-"""Vráti SHA-256 hash z prenesenej správy.
-   Argument by mal byť objekt typu reťazec."""
-
 
 def generate_hash(message: str) -> str:
     if isinstance(message, str):
-        message = bytearray(message, 'ascii')
+        message = bytearray(message, 'utf-8')  # Changed to 'utf-8' to handle Unicode
     elif isinstance(message, bytes):
         message = bytearray(message)
     elif not isinstance(message, bytearray):
-        raise TypeError
+        raise TypeError("Invalid input type")
 
     # Padding
-    length = len(message) * 8  # len(message) je počet BYTES!!!
+    length = len(message) * 8  # length in bits
     message.append(0x80)
     while (len(message) * 8 + 64) % 512 != 0:
         message.append(0x00)
 
-    message += length.to_bytes(8, 'big')  # doplní na 8 bajtov alebo 64 bitov
+    message += length.to_bytes(8, 'big')  # pad to 8 bytes (64 bits)
 
     assert (len(message) * 8) % 512 == 0, "Padding did not complete properly!"
 
     # Parsing
-    blocks = []  # obsahuje 512-bitové časti správy
-    for i in range(0, len(message), 64):  # 64 bajtov je 512 bitov
+    blocks = []  # contains 512-bit chunks of the message
+    for i in range(0, len(message), 64):  # 64 bytes is 512 bits
         blocks.append(message[i:i + 64])
 
-    # Nastavenie počiatočnej hodnoty hashu
+    # Initial hash values
     h0 = 0x6a09e667
     h1 = 0xbb67ae85
     h2 = 0x3c6ef372
@@ -49,13 +46,13 @@ def generate_hash(message: str) -> str:
     h6 = 0x1f83d9ab
     h7 = 0x5be0cd19
 
-    # Výpočet SHA-256 hasha
+    # SHA-256 computation
     for message_block in blocks:
-        # Pripraví správu na spracovanie
+        # Prepare the message schedule
         message_schedule = []
         for t in range(0, 64):
             if t <= 15:
-                message_schedule.append(bytes(message_block[t * 4:(t * 4) + 4]))
+                message_schedule.append(message_block[t * 4:(t * 4) + 4])
             else:
                 term1 = _sigma1(int.from_bytes(message_schedule[t - 2], 'big'))
                 term2 = int.from_bytes(message_schedule[t - 7], 'big')
@@ -67,7 +64,7 @@ def generate_hash(message: str) -> str:
 
         assert len(message_schedule) == 64
 
-        # Inicializácia pracovných premenných
+        # Initialize working variables
         a = h0
         b = h1
         c = h2
@@ -77,11 +74,10 @@ def generate_hash(message: str) -> str:
         g = h6
         h = h7
 
-        # Iterácia pre t=0 až 63
+        # Compression function main loop
         for t in range(64):
             t1 = ((h + _capsigma1(e) + _ch(e, f, g) + constants[t] +
                    int.from_bytes(message_schedule[t], 'big')) % 2 ** 32)
-
             t2 = (_capsigma0(a) + _maj(a, b, c)) % 2 ** 32
 
             h = g
@@ -93,7 +89,7 @@ def generate_hash(message: str) -> str:
             b = a
             a = (t1 + t2) % 2 ** 32
 
-        # Výpočet medzihodnoty hashu
+        # Compute the intermediate hash value
         h0 = (h0 + a) % 2 ** 32
         h1 = (h1 + b) % 2 ** 32
         h2 = (h2 + c) % 2 ** 32
@@ -109,40 +105,30 @@ def generate_hash(message: str) -> str:
             (h6).to_bytes(4, 'big') + (h7).to_bytes(4, 'big')).hex()
 
 
-# Funkcia vykonáva operáciu σ0 na vstupnom čísle. Operácia pozostáva z rotácií doprava o rôzne počty bitov a xorovania.
+# Helper functions
 def _sigma0(num: int):
-    num = (_rotate_right(num, 7) ^ _rotate_right(num, 18) ^ (num >> 3))
-    return num
+    return _rotate_right(num, 7) ^ _rotate_right(num, 18) ^ (num >> 3)
 
 
 def _sigma1(num: int):
-    num = (_rotate_right(num, 17) ^ _rotate_right(num, 19) ^ (num >> 10))
-    return num
+    return _rotate_right(num, 17) ^ _rotate_right(num, 19) ^ (num >> 10)
 
 
-#  Funkcia vykonáva operáciu Ʃ0 na vstupnom čísle. Operácia pozostáva z rotácií doprava o rôzne počty bitov a xorovania.
 def _capsigma0(num: int):
-    num = (_rotate_right(num, 2) ^ _rotate_right(num, 13) ^ _rotate_right(num, 22))
-    return num
+    return _rotate_right(num, 2) ^ _rotate_right(num, 13) ^ _rotate_right(num, 22)
 
 
 def _capsigma1(num: int):
-    num = (_rotate_right(num, 6) ^ _rotate_right(num, 11) ^ _rotate_right(num, 25))
-    return num
+    return _rotate_right(num, 6) ^ _rotate_right(num, 11) ^ _rotate_right(num, 25)
 
 
-#   Funkcia reprezentuje operáciu "choice" v SHA-256.
-#   Porovnáva bity vstupných čísel a aplikuje logickú funkciu AND, pričom niektoré bity môžu byť negované.
 def _ch(x: int, y: int, z: int):
     return (x & y) ^ (~x & z)
 
 
-#  Funkcia reprezentuje operáciu "majority" v SHA-256.
-#  Porovnáva bity vstupných čísel a aplikuje logickú funkciu XOR.
 def _maj(x: int, y: int, z: int):
     return (x & y) ^ (x & z) ^ (y & z)
 
 
-#  Rotuje číslo doprava o určitý počet bitov.
 def _rotate_right(num: int, shift: int, size: int = 32):
-    return (num >> shift) | (num << size - shift)
+    return (num >> shift) | (num << (size - shift)) & (2 ** size - 1)
