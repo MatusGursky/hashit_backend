@@ -3,6 +3,14 @@
 
 Backend aplikácie sa využíva pre zavolanie hashovacej funkcii SHA-256
 
+## Prepare python environment
+```bash
+
+python3 -m venv venv     
+source ./venv/bin/activate
+
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
 
