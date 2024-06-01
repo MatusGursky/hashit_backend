@@ -13,7 +13,7 @@ source ./venv/bin/activate
 
 ```
 
-### Start the app
+### Run application with the following commands:
 ```bash
 
 project_KB_backend$ pip install -r requirements.txt
