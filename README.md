@@ -1,7 +1,9 @@
 
 # Backend for HashIt App
 
-Backend aplikácie sa využíva pre zavolanie hashovacej funkcii SHA-256
+Aplikácia HahsIt umožňuje vytváranie hashov pomocou implementovaného algoritmu SHA-256. Taktiež ponúka aj možnosť využiť ostatné hashovacie funkcie ako MD5, SHA3, SHA-224 a pod., ktoré sú dostupné cez knižnicu crypto-js. Okrem toho, umožňuje porovnávanie hashov tým, že si uložíme hash a následne sa porovnáva so súčasným hashom. Ak sa zhodujú, textové polia sa zafarbia zelenou farbou. Tiež je možné skopírovať hodnotu hashu pre ďalšie použitie.
+
+Je to klient-server aplikácia. Klient bol naprogramoaný využitím frameworku Vue.js 3 v TypeScirpt a komponentovým frameworkom Quasar. Server bol naprogramovaný využitím frameworku FastAPI v Python.
 
 ## Prepare python environment
 ```bash
