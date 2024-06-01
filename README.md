@@ -5,7 +5,7 @@ Aplikácia HahsIt umožňuje vytváranie hashov pomocou implementovaného algori
 
 Je to klient-server aplikácia. Klient bol naprogramovaný využitím frameworku Vue.js 3 v TypeScirpt a komponentovým frameworkom Quasar. Klient obsahuje watch property pre automatické vykonanie hashu pri písaní a pri zvolení hashovacej funkcie. Server bol naprogramovaný využitím frameworku FastAPI v Python.
 
-## Prepare python environment
+### Prepare python environment
 ```bash
 
 python3 -m venv venv     
@@ -13,7 +13,7 @@ source ./venv/bin/activate
 
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app
 ```bash
 
 project_KB_backend$ pip install -r requirements.txt
