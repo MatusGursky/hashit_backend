@@ -1,4 +1,3 @@
-# Constants
 constants = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -27,6 +26,7 @@ def create_hash(message: str) -> str:
     while (len(message) * 8 + 64) % 512 != 0:
         message.append(0x00)
 
+    # to_bytes - Return an array of bytes representing an integer.
     message += length.to_bytes(8, 'big')  # doplnenie na 8 bajtov (64 bitov)
 
     assert (len(message) * 8) % 512 == 0, "Padding is not complete properly!"
@@ -35,7 +35,7 @@ def create_hash(message: str) -> str:
     for i in range(0, len(message), 64):  # 64 bajtov je 512 bitov
         blocks.append(message[i:i + 64])
 
-    # Počiatočné hodnoty hashov
+    # Definícia počiatočných hodnôť hashov
     h0 = 0x6a09e667
     h1 = 0xbb67ae85
     h2 = 0x3c6ef372
@@ -45,7 +45,7 @@ def create_hash(message: str) -> str:
     h6 = 0x1f83d9ab
     h7 = 0x5be0cd19
 
-    # Výpočet SHA-256 algoritmu
+    # Výpočet SHA-256 alg
     for message_block in blocks:
         # Príprava rozvrhu správy
         message_schedule = []
@@ -63,7 +63,7 @@ def create_hash(message: str) -> str:
 
         assert len(message_schedule) == 64
 
-        # Inicializácia pracovných premenných
+        # Inicializujem pracovné premenné
         a = h0
         b = h1
         c = h2
@@ -73,7 +73,7 @@ def create_hash(message: str) -> str:
         g = h6
         h = h7
 
-        # Hlavná slučka kompresnej funkcie
+        # Kompresná funkcia
         for t in range(64):
             t1 = ((h + _capsigma1(e) + _ch(e, f, g) + constants[t] +
                    int.from_bytes(message_schedule[t], 'big')) % 2 ** 32)
