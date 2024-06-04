@@ -10,7 +10,7 @@ if __name__ == '__main__':
     print_hi('Hashing API')
 
 from fastapi import FastAPI
-from hashes.sha256 import generate_hash
+from hashes.sha256 import create_hash
 
 app = FastAPI()
 
@@ -34,5 +34,5 @@ async def root():
 
 @app.post("/api/hashes/sha256")
 async def get_sha256(request: HashRequest):
-    hash_result = generate_hash(request.text)
+    hash_result = create_hash(request.text)
     return {"text": request.text, "hash": hash_result}

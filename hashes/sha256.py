@@ -11,11 +11,11 @@ constants = [
 ]
 
 
-def generate_hash(message: str) -> str:
+def create_hash(message: str) -> str:
     # Vráti SHA-256 hash z prenesenej správy.
     # Argument by mal byť objekt typu reťazec.
     if isinstance(message, str):
-        message = bytearray(message, 'utf-8')  # to handle special characters
+        message = bytearray(message, 'utf-8')  # kvôli specialnym znakom
     elif isinstance(message, bytes):
         message = bytearray(message)
     elif not isinstance(message, bytearray):
@@ -29,8 +29,7 @@ def generate_hash(message: str) -> str:
 
     message += length.to_bytes(8, 'big')  # doplnenie na 8 bajtov (64 bitov)
 
-    assert (len(message) * 8) % 512 == 0, "Padding did not complete properly!"
-
+    assert (len(message) * 8) % 512 == 0, "Padding is not complete properly!"
     # Parsing
     blocks = []  # obsahuje 512-bitové časti správy
     for i in range(0, len(message), 64):  # 64 bajtov je 512 bitov
